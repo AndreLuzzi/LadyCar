@@ -112,12 +112,14 @@
   </div>
 
   <div id="searchScreen" class="hidden app-screen">
-    <div class="header-internal">
+    <div class="header-internal small-header">
+      <span class="back-arrow" id="voltarDaPesquisa">⬅</span>
       <h2>PESQUISAR SERVIÇOS</h2>
     </div>
     <div class="search-box">
       <input type="text" id="searchInput" placeholder="Digite o nome do serviço..." autocomplete="off" />
     </div>
+    <button id="voltarPesquisaParaHome" class="btn-secondary full-width margin-top-10">Voltar</button>
     <div id="searchResults" class="service-list">
       <p>Digite o nome do serviço para pesquisar.</p>
     </div>
@@ -162,7 +164,7 @@
             </div>
             
             <button id="selectServiceBtn" class="btn-primary full-width">SELECIONAR SERVIÇO</button>
-            <button id="voltarParaSelecaoDeServicos" class="btn-secondary full-width margin-top-10">Voltar para Seleção de Serviços</button>
+            <button id="voltarParaSelecaoDeServicos" class="btn-secondary full-width margin-top-10">Voltar para Pesquisa de Serviços</button>
         </div>
         
         <nav class="bottom-nav">
@@ -208,6 +210,7 @@
             
             <p class="agendamento-info">⚠️ *O agendamento será confirmado após a verificação de disponibilidade.</p>
 
+            <button type="button" id="voltarParaDescricaoBtn" class="btn-secondary full-width margin-top-10">Voltar para Descrição do Serviço</button>
             <button type="submit" class="btn-primary full-width" id="confirmarAgendamentoBtn">CONFIRMAR AGENDAMENTO</button>
         </form>
     </div>

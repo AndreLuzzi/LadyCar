@@ -477,17 +477,24 @@ document.getElementById("backToHomeBtn") && document.getElementById("backToHomeB
 // ===================================
 
 // ⭐️ CORREÇÃO PRINCIPAL: Evento para o botão "AGENDAR SERVIÇOS" na Home. (Se o ID for 'btnAgendar')
-document.getElementById("btnAgendar") && document.getElementById("btnAgendar").addEventListener("click", showSearch); 
-// ... (outros listeners)
+document.getElementById("btnAgendar") && document.getElementById("btnAgendar").addEventListener("click", showSearch);
+
+// ⭐️ NOVO: Botão Voltar da Pesquisa de Serviço para a Tela Inicial
+document.getElementById("voltarDaPesquisa") && document.getElementById("voltarDaPesquisa").addEventListener("click", showMain);
+document.getElementById("voltarPesquisaParaHome") && document.getElementById("voltarPesquisaParaHome").addEventListener("click", showMain);
 
 // ⭐️ NOVO: Botão Voltar da Descrição de Serviço para a Lista de Serviços
-document.getElementById("voltarParaSelecaoDeServicos") && document.getElementById("voltarParaSelecaoDeServicos").addEventListener("click", showAgendarSelection);
+document.getElementById("voltarParaSelecaoDeServicos") && document.getElementById("voltarParaSelecaoDeServicos").addEventListener("click", showSearch);
 
 // ... (navegação pela barra inferior e botões)
 
 // ⭐️ Lógica de Transição para a tela final de Agendamento
 // Botão "SELECIONAR SERVIÇO" na Descrição (AGORA LEVA PARA A TELA FINAL)
 document.getElementById("selectServiceBtn") && document.getElementById("selectServiceBtn").addEventListener("click", showAgendarFinal);
+
+document.getElementById("voltarParaDescricaoBtn") && document.getElementById("voltarParaDescricaoBtn").addEventListener("click", () => {
+    showServiceDescription(SELECTED_SERVICE);
+});
 
 // Botão Voltar da Tela Final para a Descrição (ID 'voltarParaDescricao' no index.html)
 document.getElementById("voltarParaDescricao") && document.getElementById("voltarParaDescricao").addEventListener("click", () => {
