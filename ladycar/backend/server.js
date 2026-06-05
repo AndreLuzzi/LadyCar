@@ -1,20 +1,14 @@
 const express = require("express");
 const cors = require("cors");
-const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
+const pool = require("./db");
+const prestadorHelper = require("./helpers/prestadorHelper");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Conexão com PostgreSQL
-const pool = new Pool({
-  user: "postgres",     
-  host: "localhost",    
-  database: "LadyCar",  
-  password: "123",      
-  port: 5432,           
-});
+// Conexão com PostgreSQL: utilizamos o pool central em './db.js' (importado acima)
 
 // Teste inicial
 app.get("/", (req, res) => {
@@ -166,16 +160,51 @@ app.get("/services", async (req, res) => {
   }
 });
 
-// Rota de agendamento
+// Rota de agendamento - NOVO: com roteamento automático de prestador
 app.post("/agendar", async (req, res) => {
   const { id_cliente, data, hora, descricao } = req.body;
 
   try {
-    const result = await pool.query(
-      "INSERT INTO agendamento (id_cliente, data, hora, descricao) VALUES ($1, $2, $3, $4) RETURNING *",
-      [id_cliente, data, hora, descricao]
+    // 1. Buscar dados do cliente (para obter cidade)
+    const clienteRes = await pool.query(
+      "SELECT cidade_estado FROM cliente WHERE id_cliente=$1",
+      [id_cliente]
     );
-    res.json(result.rows[0]);
+    if (clienteRes.rows.length === 0) {
+      return res.status(404).json({ error: "Cliente não encontrado" });
+    }
+    const cidade = clienteRes.rows[0].cidade_estado;
+
+    // 2. Determinar categoria do serviço pela descrição
+    // Aqui fazemos um mapeamento simples; em produção, teria id_servico
+    let categoria = "Mecânico"; // padrão
+    if (descricao.toLowerCase().includes("pneu")) categoria = "Borracheiro";
+    if (descricao.toLowerCase().includes("bateria")) categoria = "Eletricista";
+    if (descricao.toLowerCase().includes("lavag")) categoria = "Lavagem";
+    if (descricao.toLowerCase().includes("fusív")) categoria = "Eletricista";
+
+    // 3. Buscar prestador mais próximo
+    let prestador = await prestadorHelper.findNearestPrestador(categoria, cidade);
+    if (!prestador) {
+      prestador = await prestadorHelper.findPrestadorByCategoria(categoria);
+    }
+
+    // 4. Inserir agendamento (com ou sem prestador)
+    const id_prestador = prestador ? prestador.id_prestador : null;
+    const status_solicitacao = prestador ? "pendente" : "sem_prestador";
+
+    const query = `
+      INSERT INTO agendamento 
+      (id_cliente, data, hora, descricao, id_prestador, status_solicitacao, status) 
+      VALUES ($1, $2, $3, $4, $5, $6, 'Pendente') 
+      RETURNING *
+    `;
+    const result = await pool.query(query, [id_cliente, data, hora, descricao, id_prestador, status_solicitacao]);
+
+    res.json({
+      ...result.rows[0],
+      prestador_atribuido: prestador ? `${prestador.nome} (${prestador.categoria})` : "Nenhum prestador disponível"
+    });
   } catch (err) {
     console.error("Erro ao agendar:", err);
     res.status(500).json({ error: "Erro ao criar agendamento" });
@@ -239,6 +268,100 @@ app.put("/editar-agendamento/:id_agendamento", async (req, res) => {
   }
 });
 
+// ⭐️ NOVO: Endpoints de Solicitações para Prestador ⭐️
+// Listar solicitações de um prestador (pendentes, aceitas, concluídas)
+app.get("/solicitacoes/:id_prestador", async (req, res) => {
+  const { id_prestador } = req.params;
+  const { status } = req.query; // opcional: 'pendente', 'aceito', 'concluido', 'recusado'
+
+  try {
+    let query = `
+      SELECT a.*, c.nome as cliente_nome, c.telefone as cliente_telefone, c.cidade_estado as cliente_cidade
+      FROM agendamento a
+      JOIN cliente c ON a.id_cliente = c.id_cliente
+      WHERE a.id_prestador = $1
+    `;
+    const params = [id_prestador];
+
+    if (status) {
+      query += " AND a.status_solicitacao = $2";
+      params.push(status);
+    }
+
+    query += " ORDER BY a.data ASC, a.hora ASC";
+
+    const result = await pool.query(query, params);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Erro ao listar solicitações:", err);
+    res.status(500).json({ error: "Erro ao listar solicitações" });
+  }
+});
+
+// Aceitar solicitação
+app.put("/aceitar-solicitacao/:id_agendamento", async (req, res) => {
+  const { id_agendamento } = req.params;
+
+  try {
+    const result = await pool.query(
+      "UPDATE agendamento SET status_solicitacao = 'aceito' WHERE id_agendamento = $1 RETURNING *",
+      [id_agendamento]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Solicitação não encontrada" });
+    }
+
+    res.json({ message: "Solicitação aceita", agendamento: result.rows[0] });
+  } catch (err) {
+    console.error("Erro ao aceitar solicitação:", err);
+    res.status(500).json({ error: "Erro ao aceitar solicitação" });
+  }
+});
+
+// Recusar solicitação
+app.put("/recusar-solicitacao/:id_agendamento", async (req, res) => {
+  const { id_agendamento } = req.params;
+
+  try {
+    // Recusar = limpar id_prestador e marcar como sem_prestador, assim roteará para outro
+    const result = await pool.query(
+      "UPDATE agendamento SET id_prestador = NULL, status_solicitacao = 'recusado' WHERE id_agendamento = $1 RETURNING *",
+      [id_agendamento]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Solicitação não encontrada" });
+    }
+
+    res.json({ message: "Solicitação recusada", agendamento: result.rows[0] });
+  } catch (err) {
+    console.error("Erro ao recusar solicitação:", err);
+    res.status(500).json({ error: "Erro ao recusar solicitação" });
+  }
+});
+
+// Completar solicitação (serviço realizado)
+app.put("/completar-solicitacao/:id_agendamento", async (req, res) => {
+  const { id_agendamento } = req.params;
+
+  try {
+    const result = await pool.query(
+      "UPDATE agendamento SET status_solicitacao = 'concluido' WHERE id_agendamento = $1 RETURNING *",
+      [id_agendamento]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Solicitação não encontrada" });
+    }
+
+    res.json({ message: "Solicitação marcada como concluída", agendamento: result.rows[0] });
+  } catch (err) {
+    console.error("Erro ao completar solicitação:", err);
+    res.status(500).json({ error: "Erro ao completar solicitação" });
+  }
+});
+
 // ⭐️ NOVO: Rota de Esqueceu a Senha ⭐️
 app.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
@@ -272,6 +395,10 @@ app.post("/forgot-password", async (req, res) => {
 });
 
 // Inicia o servidor
+// Import prestador routes
+const prestadorRoutes = require("./routes/prestadorRoutes");
+app.use("/prestadores", prestadorRoutes);
+
 app.listen(3000, () => {
   console.log("Servidor rodando em http://localhost:3000");
 });

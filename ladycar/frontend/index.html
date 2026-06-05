@@ -21,7 +21,82 @@
 
         <p class="register-text">Não possui conta?</p>
         <button type="button" id="goToRegister" class="btn-secondary">Cadastrar</button>
+        <button type="button" id="btnPrestador" class="btn-secondary" style="display:block;margin-top:10px;text-align:center;">Sou prestador</button>
       </form>
+    </div>
+  </div>
+
+  <!-- ===== Prestador (SPA screens) ===== -->
+  <div id="prestadorLoginScreen" class="container hidden">
+    <div class="login-box">
+      <h3>Login Prestador</h3>
+      <form id="loginPrestadorForm">
+        <input type="email" id="email" placeholder="E-mail" required />
+        <input type="password" id="senha" placeholder="Senha" required />
+        <button type="submit" class="btn-primary">Entrar</button>
+      </form>
+      <p class="register-text">Não tem conta? <a href="#" id="goToPrestadorRegister">Cadastre-se</a></p>
+      <button type="button" id="backToClientLogin" class="btn-secondary">Voltar</button>
+    </div>
+  </div>
+
+  <div id="prestadorRegisterScreen" class="container hidden">
+    <div class="login-box">
+      <h3>Cadastro Prestador</h3>
+      <form id="cadastroPrestadorForm">
+        <input type="text" id="nome" placeholder="Nome" required />
+        <input type="text" id="cpf" placeholder="CPF" required />
+        <input type="text" id="telefone" placeholder="Telefone" />
+        <input type="email" id="email" placeholder="E-mail" required />
+        <input type="password" id="senha" placeholder="Senha" required />
+        <select id="categoria" required>
+          <option value="">Selecione a categoria</option>
+          <option>Mecânico</option>
+          <option>Eletricista</option>
+          <option>Borracheiro</option>
+          <option>Guincho</option>
+          <option>Funilaria</option>
+          <option>Pintura</option>
+          <option>Troca de Óleo</option>
+          <option>Lavagem</option>
+        </select>
+        <textarea id="descricao" placeholder="Descrição / Especialidades"></textarea>
+        <input type="text" id="cidade" placeholder="Cidade" />
+        <input type="text" id="estado" placeholder="Estado" />
+        <button type="submit" class="btn-primary">Cadastrar</button>
+      </form>
+      <button type="button" id="backToPrestadorLogin" class="btn-secondary">Voltar</button>
+    </div>
+  </div>
+
+  <div id="prestadorProfileScreen" class="hidden app-screen">
+    <div class="header-internal">
+      <h2>Perfil Prestador</h2>
+    </div>
+    <div class="service-details">
+      <div id="perfilContent"></div>
+      <button id="sairBtn" class="btn-secondary full-width">Sair</button>
+    </div>
+  </div>
+
+  <div id="prestadorListScreen" class="hidden app-screen">
+    <div class="header-internal">
+      <h2>Prestadores</h2>
+    </div>
+    <div class="service-details">
+      <label>Filtrar por categoria:</label>
+      <select id="filterCategoria">
+        <option value="">Todas</option>
+        <option>Mecânico</option>
+        <option>Eletricista</option>
+        <option>Borracheiro</option>
+        <option>Guincho</option>
+        <option>Funilaria</option>
+        <option>Pintura</option>
+        <option>Troca de Óleo</option>
+        <option>Lavagem</option>
+      </select>
+      <div id="prestadoresList"></div>
     </div>
   </div>
 
@@ -312,6 +387,35 @@
     </nav>
   </div>
 
+  <!-- Tela de Solicitações para Prestador -->
+  <div id="solicitacoesScreen" class="hidden app-screen">
+    <div class="header-internal">
+      <h2>SOLICITAÇÕES DE SERVIÇO</h2>
+    </div>
+    <div class="service-details">
+      <div>
+        <label>Filtrar por status:</label>
+        <select id="filterStatus">
+          <option value="">Todos</option>
+          <option value="pendente">Pendentes</option>
+          <option value="aceito">Aceitos</option>
+          <option value="concluido">Concluídos</option>
+          <option value="recusado">Recusados</option>
+        </select>
+      </div>
+      <div id="solicitacoesList"></div>
+    </div>
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item nav-home">🏠</a>
+        <a href="#" class="nav-item nav-search">🔍</a>
+        <a href="#" class="nav-item nav-cart">🛒</a>
+        <a href="#" class="nav-item nav-chat">💬</a>
+        <a href="#" class="nav-item nav-profile">👤</a>
+    </nav>
+  </div>
+
   <script src="script.js"></script>
+  <script src="js/prestador.js"></script>
+  <script src="js/solicitacoes.js"></script>
 </body>
 </html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Listar Prestadores</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Prestadores</h2>
+    <div>
+      <label>Filtrar por categoria:</label>
+      <select id="filterCategoria">
+        <option value="">Todas</option>
+        <option>Mecânico</option>
+        <option>Eletricista</option>
+        <option>Borracheiro</option>
+        <option>Guincho</option>
+        <option>Funilaria</option>
+        <option>Pintura</option>
+        <option>Troca de Óleo</option>
+        <option>Lavagem</option>
+      </select>
+    </div>
+    <div id="prestadoresList"></div>
+  </div>
+  <script src="js/prestador.js"></script>
+</body>
+</html>

@@ -178,6 +178,89 @@ body {
     margin-top: 25px; 
 }
 
+/* Estilo de tela de Prestador igual ao Login/Cadastro do cliente */
+#prestadorLoginScreen,
+#prestadorRegisterScreen {
+  background-color: #fdfdfd;
+  color: #000;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#prestadorLoginScreen .login-box,
+#prestadorRegisterScreen .login-box {
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  padding: 40px 30px;
+  text-align: center;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+#prestadorLoginScreen input,
+#prestadorRegisterScreen input,
+#prestadorLoginScreen select,
+#prestadorRegisterScreen select,
+#prestadorLoginScreen textarea,
+#prestadorRegisterScreen textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 15px;
+  box-sizing: border-box;
+  color: #333;
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 1.5px #f49cc750, 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+#prestadorLoginScreen input:focus,
+#prestadorRegisterScreen input:focus,
+#prestadorLoginScreen select:focus,
+#prestadorRegisterScreen select:focus,
+#prestadorLoginScreen textarea:focus,
+#prestadorRegisterScreen textarea:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #f49cc7, 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#prestadorLoginScreen .btn-primary,
+#prestadorRegisterScreen .btn-primary,
+#prestadorLoginScreen .btn-secondary,
+#prestadorRegisterScreen .btn-secondary {
+  width: 100%;
+}
+
+#prestadorLoginScreen .register-text,
+#prestadorRegisterScreen .register-text {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+#prestadorLoginScreen .register-text a,
+#prestadorRegisterScreen .register-text a {
+  color: #f49cc7;
+  text-decoration: none;
+}
+
+#prestadorRegisterScreen .btn-primary {
+    margin-top: 25px;
+}
+
 
 /* =======================================
    3. TELA PRINCIPAL (Home / Manutenção)
@@ -734,6 +817,82 @@ body {
     background: #fef1f7;
 }
 
+/* =======================================
+   7. TELA DE SOLICITAÇÕES (Prestador)
+======================================= */
+
+.solicitacao-card {
+    background: #fff;
+    border-left: 4px solid #f8b4d9;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.solicitacao-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.solicitacao-header strong {
+    color: #4b0082;
+    font-size: 16px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-pendente {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-aceito {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-concluido {
+    background-color: #cfe2ff;
+    color: #084298;
+}
+
+.status-recusado {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+.solicitacao-card p {
+    margin: 6px 0;
+    font-size: 13px;
+    color: #555;
+}
+
+.solicitacao-card p strong {
+    color: #333;
+}
+
+.solicitacao-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.btn-small {
+    flex: 1;
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+    border-radius: 20px !important;
+}
 
 /* =======================================
    8. RESPONSIVIDADE

@@ -1,0 +1,91 @@
+const pool = require('../db');
+
+async function createPrestador(prestador) {
+  const query = `
+    INSERT INTO prestador_servico
+    (nome, cpf, telefone, email, senha, categoria, descricao, cidade, estado, avaliacao, ativo)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+    RETURNING *
+  `;
+  const values = [
+    prestador.nome,
+    prestador.cpf,
+    prestador.telefone,
+    prestador.email,
+    prestador.senha,
+    prestador.categoria,
+    prestador.descricao || null,
+    prestador.cidade || null,
+    prestador.estado || null,
+    prestador.avaliacao || 0,
+    prestador.ativo === undefined ? true : prestador.ativo,
+  ];
+
+  const result = await pool.query(query, values);
+  return result.rows[0];
+}
+
+async function getPrestadorById(id) {
+  const result = await pool.query(
+    'SELECT * FROM prestador_servico WHERE id_prestador = $1',
+    [id]
+  );
+  return result.rows[0];
+}
+
+async function getPrestadoresByCategoria(categoria) {
+  const result = await pool.query(
+    'SELECT * FROM prestador_servico WHERE categoria = $1 ORDER BY nome',
+    [categoria]
+  );
+  return result.rows;
+}
+
+async function listPrestadores() {
+  const result = await pool.query('SELECT * FROM prestador_servico ORDER BY nome');
+  return result.rows;
+}
+
+async function updatePrestador(id, prestador) {
+  const query = `
+    UPDATE prestador_servico SET
+      nome=$1, cpf=$2, telefone=$3, email=$4, categoria=$5, descricao=$6, cidade=$7, estado=$8, avaliacao=$9, ativo=$10
+    WHERE id_prestador=$11
+    RETURNING *
+  `;
+  const values = [
+    prestador.nome,
+    prestador.cpf,
+    prestador.telefone,
+    prestador.email,
+    prestador.categoria,
+    prestador.descricao || null,
+    prestador.cidade || null,
+    prestador.estado || null,
+    prestador.avaliacao || 0,
+    prestador.ativo === undefined ? true : prestador.ativo,
+    id,
+  ];
+  const result = await pool.query(query, values);
+  return result.rows[0];
+}
+
+async function deletePrestador(id) {
+  const result = await pool.query('DELETE FROM prestador_servico WHERE id_prestador=$1 RETURNING *', [id]);
+  return result.rows[0];
+}
+
+async function findByEmail(email) {
+  const result = await pool.query('SELECT * FROM prestador_servico WHERE email=$1', [email]);
+  return result.rows[0];
+}
+
+module.exports = {
+  createPrestador,
+  getPrestadorById,
+  getPrestadoresByCategoria,
+  listPrestadores,
+  updatePrestador,
+  deletePrestador,
+  findByEmail,
+};

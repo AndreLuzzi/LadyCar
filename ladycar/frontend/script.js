@@ -169,6 +169,50 @@ function showAgendarFinal() {
     document.getElementById("agendandoServiceName").textContent = `Serviço: ${SELECTED_SERVICE}`;
 }
 
+// ==============================
+// Prestador (SPA) navigation
+// ==============================
+function showPrestadorLogin() {
+    hideAllScreens();
+    document.getElementById('prestadorLoginScreen').classList.remove('hidden');
+}
+
+function showPrestadorRegister() {
+    hideAllScreens();
+    document.getElementById('prestadorRegisterScreen').classList.remove('hidden');
+}
+
+function showPrestadorProfile() {
+    hideAllScreens();
+    document.getElementById('prestadorProfileScreen').classList.remove('hidden');
+    // trigger prestador profile render if script created one
+    if (typeof renderPrestadorProfile === 'function') renderPrestadorProfile();
+}
+
+function showPrestadorList() {
+    hideAllScreens();
+    document.getElementById('prestadorListScreen').classList.remove('hidden');
+    // trigger list refresh (the prestador.js attaches a change listener)
+    const f = document.getElementById('filterCategoria');
+    if (f) f.dispatchEvent(new Event('change'));
+}
+
+function showSolicitacoes() {
+    if (typeof loadSolicitacoes === 'function') {
+        hideAllScreens();
+        document.getElementById('solicitacoesScreen').classList.remove('hidden');
+        loadSolicitacoes();
+    } else {
+        alert('Função loadSolicitacoes não disponível');
+    }
+}
+
+// buttons
+document.getElementById('btnPrestador') && document.getElementById('btnPrestador').addEventListener('click', (e) => { e.preventDefault(); showPrestadorLogin(); });
+document.getElementById('goToPrestadorRegister') && document.getElementById('goToPrestadorRegister').addEventListener('click', (e) => { e.preventDefault(); showPrestadorRegister(); });
+document.getElementById('backToPrestadorLogin') && document.getElementById('backToPrestadorLogin').addEventListener('click', (e) => { e.preventDefault(); showPrestadorLogin(); });
+document.getElementById('backToClientLogin') && document.getElementById('backToClientLogin').addEventListener('click', (e) => { e.preventDefault(); showLogin(); });
+
 
 function showProfile() {
     hideAllScreens();
