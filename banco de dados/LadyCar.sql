@@ -13,7 +13,7 @@ ALTER TABLE cliente ADD COLUMN bairro VARCHAR(100);
 ALTER TABLE cliente ADD COLUMN complemento VARCHAR(100);
 ALTER TABLE cliente ADD COLUMN cidade_estado VARCHAR(100);
 
-select * from cliente
+select * from servicos
 	
 
 CREATE TABLE servicos (
