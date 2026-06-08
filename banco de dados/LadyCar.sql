@@ -13,7 +13,7 @@ ALTER TABLE cliente ADD COLUMN bairro VARCHAR(100);
 ALTER TABLE cliente ADD COLUMN complemento VARCHAR(100);
 ALTER TABLE cliente ADD COLUMN cidade_estado VARCHAR(100);
 
-select * from servicos
+select * from agendamento
 	
 
 CREATE TABLE servicos (
@@ -33,6 +33,30 @@ CREATE TABLE agendamento (
     status VARCHAR(50) DEFAULT 'Pendente', 
     data_agendamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS prestador_servico (
+  id_prestador SERIAL PRIMARY KEY,
+  nome VARCHAR(200) NOT NULL,
+  cpf VARCHAR(20) UNIQUE NOT NULL,
+  telefone VARCHAR(30),
+  email VARCHAR(200) UNIQUE NOT NULL,
+  senha VARCHAR(200) NOT NULL,
+  categoria VARCHAR(100) NOT NULL,
+  descricao TEXT,
+  cidade VARCHAR(100),
+  estado VARCHAR(100),
+  avaliacao NUMERIC(2,1) DEFAULT 0,
+  ativo BOOLEAN DEFAULT TRUE,
+  criado_em TIMESTAMP DEFAULT NOW()
+);
+
+ALTER TABLE agendamento
+ADD COLUMN IF NOT EXISTS id_prestador INTEGER;
+
+ALTER TABLE agendamento
+ADD CONSTRAINT fk_agendamento_prestador
+FOREIGN KEY (id_prestador)
+REFERENCES prestador_servico(id_prestador);
 
 INSERT INTO servicos (nome_servico, descricao_servico) VALUES
 ('Troca de Fusíveis', 'Serviço rápido para substituição de fusíveis queimados.'),
