@@ -76,7 +76,10 @@ async function deletePrestador(id) {
 }
 
 async function findByEmail(email) {
-  const result = await pool.query('SELECT * FROM prestador_servico WHERE email=$1', [email]);
+  const result = await pool.query(
+    'SELECT * FROM prestador_servico WHERE LOWER(email)=LOWER($1)',
+    [email]
+  );
   return result.rows[0];
 }
 

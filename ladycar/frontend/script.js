@@ -76,6 +76,28 @@ function normalizarTexto(texto) {
   return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
+function getStatusBadge(status) {
+  const normalized = String(status || '').toLowerCase();
+  let label = 'Pendente';
+  let cssClass = 'status-pendente';
+
+  if (normalized === 'aceito') {
+    label = 'Aceito';
+    cssClass = 'status-aceito';
+  } else if (normalized === 'concluido' || normalized === 'concluído') {
+    label = 'Concluído';
+    cssClass = 'status-concluido';
+  } else if (normalized === 'recusado') {
+    label = 'Recusado';
+    cssClass = 'status-recusado';
+  } else if (normalized === 'sem_prestador') {
+    label = 'Sem prestador';
+    cssClass = 'status-recusado';
+  }
+
+  return `<span class="status-badge ${cssClass}">${label}</span>`;
+}
+
 function showSearch() {
   hideAllScreens();
   document.getElementById("searchScreen").classList.remove("hidden");
@@ -566,6 +588,21 @@ document.getElementById("finalAgendamentoForm") && document.getElementById("fina
     const hora = document.getElementById("agendarHora").value;
     const descricao = SELECTED_SERVICE;
 
+    if (!data || !hora) {
+        alert("Por favor, informe data e hora para o agendamento.");
+        return;
+    }
+
+    const agendamentoDate = new Date(`${data}T${hora}`);
+    const agora = new Date();
+    if (agendamentoDate < agora && !confirm("A data/hora informada já passou. Deseja agendar mesmo assim?")) {
+        return;
+    }
+
+    if (!confirm(`Deseja confirmar o agendamento de ${descricao} para ${data} às ${hora}?`)) {
+        return;
+    }
+
     try {
         const res = await fetch(`${API_URL}/agendar`, {
             method: "POST",
@@ -573,13 +610,14 @@ document.getElementById("finalAgendamentoForm") && document.getElementById("fina
             body: JSON.stringify({ id_cliente, data, hora, descricao }),
         });
 
+        const responseData = await res.json();
+
         if (res.ok) {
-            alert(`Agendamento de "${descricao}" para ${data} às ${hora} CONFIRMADO!`);
-            SELECTED_SERVICE = null; // Limpa o serviço após o sucesso
-            showServicos(); // Leva para a tela de serviços realizados
+            alert(`Agendamento de "${descricao}" para ${data} às ${hora} confirmado!`);
+            SELECTED_SERVICE = null;
+            showServicos();
         } else {
-            const err = await res.json();
-            alert("Erro ao agendar: " + err.error);
+            alert("Erro ao agendar: " + (responseData.error || "Falha desconhecida."));
         }
     } catch (err) {
         alert("Erro ao conectar com o servidor para agendamento.");
@@ -644,21 +682,36 @@ async function loadServicos() {
     const data = await res.json();
 
     if (res.ok) {
-      if (data.length === 0) {
+      if (!Array.isArray(data) || data.length === 0) {
         lista.innerHTML = "<p>Ainda não há serviços cadastrados.</p>";
       } else {
         lista.innerHTML = "";
         data.forEach((ag) => {
           const div = document.createElement("div");
           div.classList.add("servico-item");
-          const dataFormatada = new Date(ag.data).toLocaleDateString('pt-BR', {timeZone: 'UTC'}); 
-          
+          const dataFormatada = new Date(ag.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+          const statusBadge = getStatusBadge(ag.status_solicitacao);
+
+          let prestadorInfo = "<p><strong>Prestador:</strong> Aguardando atribuição.</p>";
+          if (ag.prestador_nome) {
+            prestadorInfo = `
+              <p><strong>Prestador:</strong> ${ag.prestador_nome} (${ag.prestador_categoria || 'Categoria não informada'})</p>
+              <p><strong>Contato:</strong> ${ag.prestador_telefone || 'Não informado'}</p>
+            `;
+          } else if (ag.status_solicitacao === 'sem_prestador') {
+            prestadorInfo = `<p><strong>Prestador:</strong> Ainda não encontramos um prestador para este serviço.</p>`;
+          } else if (ag.status_solicitacao === 'recusado') {
+            prestadorInfo = `<p><strong>Prestador:</strong> A solicitação foi recusada. Refazer agendamento pode encontrar outro prestador.</p>`;
+          }
+
           div.innerHTML = `
             <p><strong>Data:</strong> ${dataFormatada}</p>
             <p><strong>Hora:</strong> ${ag.hora}</p>
             <p><strong>Serviço:</strong> ${ag.descricao}</p>
+            <p><strong>Status:</strong> ${statusBadge}</p>
+            ${prestadorInfo}
             <div class="servico-actions">
-              <button class="btn-editar btn-primary" onclick="abrirTelaEdicao(${ag.id_agendamento}, '${ag.descricao}', '${ag.data}', '${ag.hora}')">✏️ Editar</button>
+              <button class="btn-editar btn-primary" onclick="abrirTelaEdicao(${ag.id_agendamento}, '${ag.descricao}', '${ag.data}', '${ag.hora}')">✏️ Editar</button>
               <button class="btn-cancelar btn-secondary" onclick="cancelarAgendamento(${ag.id_agendamento})">❌ Cancelar</button>
             </div>
             <hr>

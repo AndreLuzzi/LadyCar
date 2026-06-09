@@ -1,5 +1,25 @@
 const API_URL = 'http://localhost:3000/prestadores';
 
+function navigateToPrestadorProfile() {
+  console.log('navigateToPrestadorProfile called');
+  if (typeof showPrestadorProfile === 'function') {
+    showPrestadorProfile();
+    if (typeof renderPrestadorProfile === 'function') renderPrestadorProfile();
+    return;
+  }
+
+  const screen = document.getElementById('prestadorProfileScreen');
+  if (screen) {
+    if (typeof hideAllScreens === 'function') hideAllScreens();
+    screen.classList.remove('hidden');
+    if (typeof renderPrestadorProfile === 'function') renderPrestadorProfile();
+    return;
+  }
+
+  console.log('Redirecionando para perfilPrestador.html fallback');
+  window.location.href = 'perfilPrestador.html';
+}
+
 // Cadastro de prestador
 if (document.getElementById('cadastroPrestadorForm')) {
   document.getElementById('cadastroPrestadorForm').addEventListener('submit', async (e) => {
@@ -23,6 +43,7 @@ if (document.getElementById('cadastroPrestadorForm')) {
         body: JSON.stringify(body),
       });
       const data = await res.json();
+      console.log('prestador register response', res.status, data);
       if (!res.ok) return alert(data.error || 'Erro ao cadastrar');
       alert('Cadastro realizado com sucesso');
       if (typeof showPrestadorLogin === 'function') {
@@ -52,14 +73,11 @@ if (document.getElementById('loginPrestadorForm')) {
         body: JSON.stringify(body),
       });
       const data = await res.json();
+      console.log('prestador login response', res.status, data);
       if (!res.ok) return alert(data.error || 'Erro ao autenticar');
       // salvar sessao simples
       localStorage.setItem('prestador', JSON.stringify(data));
-      if (typeof showPrestadorProfile === 'function') {
-        showPrestadorProfile();
-      } else {
-        window.location.href = 'perfilPrestador.html';
-      }
+      navigateToPrestadorProfile();
     } catch (err) {
       console.error(err);
       alert('Erro ao conectar com o servidor');
@@ -67,14 +85,19 @@ if (document.getElementById('loginPrestadorForm')) {
   });
 }
 
-// Perfil prestador
-if (document.getElementById('perfilContent')) {
-  const user = JSON.parse(localStorage.getItem('prestador'));
+function renderPrestadorProfile() {
   const content = document.getElementById('perfilContent');
+  if (!content) return;
+
+  const user = JSON.parse(localStorage.getItem('prestador'));
   if (!user) {
     content.innerHTML = '<p>Não autenticado. <a href="#" id="linkToPrestadorLogin">Entrar</a></p>';
     const l = document.getElementById('linkToPrestadorLogin');
-    if (l) l.addEventListener('click', (e) => { e.preventDefault(); if (typeof showPrestadorLogin === 'function') showPrestadorLogin(); else window.location.href = 'loginPrestador.html'; });
+    if (l) l.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (typeof showPrestadorLogin === 'function') showPrestadorLogin();
+      else window.location.href = 'loginPrestador.html';
+    });
   } else {
     content.innerHTML = `
       <p><strong>Nome:</strong> ${user.nome}</p>
@@ -84,7 +107,7 @@ if (document.getElementById('perfilContent')) {
       <p><strong>Descrição:</strong> ${user.descricao || ''}</p>
       <button id="verSolicitacoesBtn" class="btn-primary full-width" style="margin-top:15px;">Ver Solicitações</button>
     `;
-    
+
     const btnSolicitacoes = document.getElementById('verSolicitacoesBtn');
     if (btnSolicitacoes) {
       btnSolicitacoes.addEventListener('click', () => {
@@ -93,11 +116,19 @@ if (document.getElementById('perfilContent')) {
       });
     }
   }
+}
 
-  document.getElementById('sairBtn').addEventListener('click', () => {
-    localStorage.removeItem('prestador');
-    if (typeof showPrestadorLogin === 'function') showPrestadorLogin(); else window.location.href = 'loginPrestador.html';
-  });
+// Perfil prestador
+if (document.getElementById('perfilContent')) {
+  renderPrestadorProfile();
+  const sairBtn = document.getElementById('sairBtn');
+  if (sairBtn) {
+    sairBtn.addEventListener('click', () => {
+      localStorage.removeItem('prestador');
+      if (typeof showPrestadorLogin === 'function') showPrestadorLogin();
+      else window.location.href = 'loginPrestador.html';
+    });
+  }
 }
 
 // Listar prestadores

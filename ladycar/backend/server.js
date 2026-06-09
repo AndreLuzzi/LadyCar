@@ -211,19 +211,47 @@ app.post("/agendar", async (req, res) => {
   }
 });
 
-// Rota para listar agendamentos de um cliente
+// Rota para listar agendamentos de um cliente com dados do prestador atribuído
 app.get("/agendamentos/:id_cliente", async (req, res) => {
   const { id_cliente } = req.params;
 
   try {
     const result = await pool.query(
-      "SELECT * FROM agendamento WHERE id_cliente=$1 ORDER BY data DESC, hora DESC",
+      `SELECT a.*, p.nome AS prestador_nome, p.categoria AS prestador_categoria, p.telefone AS prestador_telefone, p.cidade AS prestador_cidade
+       FROM agendamento a
+       LEFT JOIN prestador_servico p ON a.id_prestador = p.id_prestador
+       WHERE a.id_cliente = $1
+       ORDER BY a.data DESC, a.hora DESC`,
       [id_cliente]
     );
     res.json(result.rows);
   } catch (err) {
     console.error("Erro ao listar agendamentos:", err);
     res.status(500).json({ error: "Erro ao listar agendamentos" });
+  }
+});
+
+// Rota detalhada para obter um agendamento específico e seu prestador atribuído
+app.get("/agendamento/:id_agendamento", async (req, res) => {
+  const { id_agendamento } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT a.*, p.nome AS prestador_nome, p.categoria AS prestador_categoria, p.telefone AS prestador_telefone, p.cidade AS prestador_cidade
+       FROM agendamento a
+       LEFT JOIN prestador_servico p ON a.id_prestador = p.id_prestador
+       WHERE a.id_agendamento = $1`,
+      [id_agendamento]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Agendamento não encontrado" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Erro ao buscar agendamento:", err);
+    res.status(500).json({ error: "Erro ao buscar agendamento" });
   }
 });
 

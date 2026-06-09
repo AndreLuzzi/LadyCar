@@ -1,9 +1,0 @@
-<p>usuarios works!</p>
-<h2>Usuários</h2>
-<input [(ngModel)]="filtro" placeholder="Buscar por nome">
-<ul>
-<li *ngFor="let u of filtrados">
-{{ u.nome }} - {{ u.email }}
-</li>
-</ul>
-<p *ngIf="filtrados.length === 0">Nenhum usuário encontrado.</p>
