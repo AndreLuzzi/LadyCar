@@ -5,13 +5,9 @@ async function createPrestador(req, res) {
   try {
     const { nome, cpf, telefone, email, senha, categoria, descricao, cidade, estado } = req.body;
 
-    console.log('Email recebido:', email);
-
     // checar email existente
     const existing = await model.findByEmail(email);
 
-    console.log('Existing:', existing);
-    
     if (existing) return res.status(400).json({ error: 'Email já cadastrado' });
 
     const hash = await bcrypt.hash(senha, 10);

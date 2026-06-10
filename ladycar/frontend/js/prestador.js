@@ -37,9 +37,6 @@ if (document.getElementById('cadastroPrestadorForm')) {
       cidade: document.getElementById('cidade').value,
       estado: document.getElementById('estado').value,
     };
-
-    console.log('Dados enviados:', body);
-    alert(JSON.stringify(body));
     
     try {
       const res = await fetch(PRESTADOR_API_URL, {
