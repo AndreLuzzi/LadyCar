@@ -11,6 +11,9 @@ router.post('/login', controller.loginPrestador);
 // Listar por categoria (definir antes de /:id para evitar conflito)
 router.get('/categoria/:categoria', controller.getPrestadoresByCategoria);
 
+
+router.get('/solicitacoes/:id', controller.getSolicitacoes);
+
 // Listar todos
 router.get('/', controller.listPrestadores);
 

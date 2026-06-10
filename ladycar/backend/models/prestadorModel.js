@@ -83,6 +83,22 @@ async function findByEmail(email) {
   return result.rows[0];
 }
 
+async function getSolicitacoesByPrestador(idPrestador) {
+  const result = await pool.query(`
+    SELECT
+      a.*,
+      c.nome AS cliente_nome,
+      c.telefone AS cliente_telefone,
+      c.cidade_estado AS cliente_cidade
+    FROM agendamento a
+    INNER JOIN cliente c
+      ON c.id_cliente = a.id_cliente
+    ORDER BY a.data_agendamento DESC
+  `);
+
+  return result.rows;
+}
+
 module.exports = {
   createPrestador,
   getPrestadorById,
@@ -91,4 +107,6 @@ module.exports = {
   updatePrestador,
   deletePrestador,
   findByEmail,
+  getSolicitacoesByPrestador,
 };
+

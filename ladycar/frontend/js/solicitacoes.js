@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000';
+const SOLICITACOES_API_URL = 'http://localhost:3000/prestadores';
 
 // Funções para gerenciar solicitações do prestador
 function showSolicitacoes() {
@@ -19,7 +19,7 @@ async function loadSolicitacoes(status = '') {
   }
 
   try {
-    let url = `${API_URL}/solicitacoes/${prestador.id_prestador}`;
+    let url = `${SOLICITACOES_API_URL}/solicitacoes/${prestador.id_prestador}`;
     if (status) url += `?status=${status}`;
 
     const res = await fetch(url);
@@ -73,7 +73,7 @@ function renderSolicitacoes(solicitacoes) {
 
 async function aceitarSolicitacao(idAgendamento) {
   try {
-    const res = await fetch(`${API_URL}/aceitar-solicitacao/${idAgendamento}`, {
+    const res = await fetch(`${SOLICITACOES_API_URL}/aceitar-solicitacao/${idAgendamento}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -94,7 +94,7 @@ async function recusarSolicitacao(idAgendamento) {
   if (!confirm('Tem certeza que deseja recusar esta solicitação?')) return;
 
   try {
-    const res = await fetch(`${API_URL}/recusar-solicitacao/${idAgendamento}`, {
+    const res = await fetch(`${SOLICITACOES_API_URL}/recusar-solicitacao/${idAgendamento}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -115,7 +115,7 @@ async function completarSolicitacao(idAgendamento) {
   if (!confirm('Marcar serviço como concluído?')) return;
 
   try {
-    const res = await fetch(`${API_URL}/completar-solicitacao/${idAgendamento}`, {
+    const res = await fetch(`${SOLICITACOES_API_URL}/completar-solicitacao/${idAgendamento}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }
     });

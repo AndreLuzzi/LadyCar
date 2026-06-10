@@ -29,9 +29,10 @@
   <!-- ===== Prestador (SPA screens) ===== -->
   <div id="prestadorLoginScreen" class="container hidden">
     <div class="login-box">
+      <img src="ladycarprestador.png" alt="Lady Car" class="logo" /> 
       <h3>Login Prestador</h3>
       <form id="loginPrestadorForm">
-        <input type="email" id="email" placeholder="E-mail" required />
+        <input type="email" id="emailPrestadorLogin" placeholder="E-mail" required />
         <input type="password" id="senha" placeholder="Senha" required />
         <button type="submit" class="btn-primary">Entrar</button>
       </form>
@@ -47,7 +48,7 @@
         <input type="text" id="nome" placeholder="Nome" required />
         <input type="text" id="cpf" placeholder="CPF" required />
         <input type="text" id="telefone" placeholder="Telefone" />
-        <input type="email" id="email" placeholder="E-mail" required />
+        <input type="email" id="emailPrestadorCadastro" placeholder="E-mail" required />
         <input type="password" id="senha" placeholder="Senha" required />
         <select id="categoria" required>
           <option value="">Selecione a categoria</option>
@@ -414,8 +415,8 @@
     </nav>
   </div>
 
-  <script src="script.js"></script>
-  <script src="js/prestador.js"></script>
   <script src="js/solicitacoes.js"></script>
+  <script src="js/prestador.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

@@ -152,10 +152,7 @@ body {
     background-color: #fef1f7;
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(248, 156, 199, 0.3);
-  margin: 12px 0;
   color: #555;
-  font-size: 14px;
-  text-decoration: none;
 }
 
 .forgot-password:hover {

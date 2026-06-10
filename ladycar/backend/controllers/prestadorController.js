@@ -5,8 +5,13 @@ async function createPrestador(req, res) {
   try {
     const { nome, cpf, telefone, email, senha, categoria, descricao, cidade, estado } = req.body;
 
+    console.log('Email recebido:', email);
+
     // checar email existente
     const existing = await model.findByEmail(email);
+
+    console.log('Existing:', existing);
+    
     if (existing) return res.status(400).json({ error: 'Email já cadastrado' });
 
     const hash = await bcrypt.hash(senha, 10);
@@ -118,6 +123,19 @@ async function deletePrestador(req, res) {
   }
 }
 
+async function getSolicitacoes(req, res) {
+  try {
+    const { id } = req.params;
+
+    const rows = await model.getSolicitacoesByPrestador(id);
+
+    res.json(rows);
+  } catch (err) {
+    console.error('Erro getSolicitacoes', err);
+    res.status(500).json({ error: 'Erro ao buscar solicitações' });
+  }
+}
+
 module.exports = {
   createPrestador,
   loginPrestador,
@@ -126,4 +144,5 @@ module.exports = {
   listPrestadores,
   updatePrestador,
   deletePrestador,
+  getSolicitacoes,
 };

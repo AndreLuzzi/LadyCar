@@ -1,4 +1,6 @@
-const API_URL = 'http://localhost:3000/prestadores';
+console.log('PRESTADOR JS CARREGADO');
+
+const PRESTADOR_API_URL = 'http://localhost:3000/prestadores';
 
 function navigateToPrestadorProfile() {
   console.log('navigateToPrestadorProfile called');
@@ -7,7 +9,7 @@ function navigateToPrestadorProfile() {
     if (typeof renderPrestadorProfile === 'function') renderPrestadorProfile();
     return;
   }
-
+ 
   const screen = document.getElementById('prestadorProfileScreen');
   if (screen) {
     if (typeof hideAllScreens === 'function') hideAllScreens();
@@ -28,7 +30,7 @@ if (document.getElementById('cadastroPrestadorForm')) {
       nome: document.getElementById('nome').value,
       cpf: document.getElementById('cpf').value,
       telefone: document.getElementById('telefone').value,
-      email: document.getElementById('email').value,
+      email: document.getElementById('emailPrestadorCadastro').value,
       senha: document.getElementById('senha').value,
       categoria: document.getElementById('categoria').value,
       descricao: document.getElementById('descricao').value,
@@ -36,8 +38,11 @@ if (document.getElementById('cadastroPrestadorForm')) {
       estado: document.getElementById('estado').value,
     };
 
+    console.log('Dados enviados:', body);
+    alert(JSON.stringify(body));
+    
     try {
-      const res = await fetch(API_URL, {
+      const res = await fetch(PRESTADOR_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -63,11 +68,11 @@ if (document.getElementById('loginPrestadorForm')) {
   document.getElementById('loginPrestadorForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const body = {
-      email: document.getElementById('email').value,
+      email: document.getElementById('emailPrestadorLogin').value,
       senha: document.getElementById('senha').value,
     };
     try {
-      const res = await fetch(API_URL + '/login', {
+      const res = await fetch(PRESTADOR_API_URL + '/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -138,7 +143,7 @@ if (document.getElementById('prestadoresList')) {
 
   async function loadPrestadores(categoria) {
     try {
-      let url = API_URL;
+      let url = PRESTADOR_API_URL;
       if (categoria) url += '/categoria/' + encodeURIComponent(categoria);
       const res = await fetch(url);
       const data = await res.json();
