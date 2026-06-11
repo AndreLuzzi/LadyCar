@@ -1,3 +1,6 @@
+// =====================================
+// CONFIGURAÇÕES E VARIÁVEIS GLOBAIS
+// =====================================
 const API_URL = "http://localhost:3000";
 
 // ⭐️ NOVO: Variável global para guardar o serviço selecionado temporariamente (CRUCIAL PARA AGENDAMENTO)
