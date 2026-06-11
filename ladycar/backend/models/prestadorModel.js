@@ -84,6 +84,43 @@ async function findByEmail(email) {
 }
 
 async function getSolicitacoesByPrestador(idPrestador) {
+
+  const prestadorResult = await pool.query(
+    `SELECT categoria
+     FROM prestador_servico
+     WHERE id_prestador = $1`,
+    [idPrestador]
+  );
+
+  if (prestadorResult.rows.length === 0) {
+    return [];
+  }
+
+  const categoria = prestadorResult.rows[0].categoria;
+
+  let servicosPermitidos = [];
+
+  if (categoria === 'Borracheiro') {
+    servicosPermitidos = [
+      'Calibragem de Pneus',
+      'Reparo de Pneus'
+    ];
+  }
+
+  else if (categoria === 'Lavagem') {
+    servicosPermitidos = [
+      'Lavagem a Seco',
+      'Limpeza de Ar-Condicionado'
+    ];
+  }
+
+  else if (categoria === 'Mecânico') {
+    servicosPermitidos = [
+      'Troca de Óleo',
+      'Verificação de Nível de Fluídos'
+    ];
+  }
+
   const result = await pool.query(`
     SELECT
       a.*,
@@ -93,10 +130,53 @@ async function getSolicitacoesByPrestador(idPrestador) {
     FROM agendamento a
     INNER JOIN cliente c
       ON c.id_cliente = a.id_cliente
+    WHERE a.descricao = ANY($1)
     ORDER BY a.data_agendamento DESC
-  `);
+  `, [servicosPermitidos]);
 
   return result.rows;
+}
+
+async function aceitarSolicitacao(idAgendamento) {
+  const result = await pool.query(
+    `
+    UPDATE agendamento
+    SET status_solicitacao = 'aceito'
+    WHERE id_agendamento = $1
+    RETURNING *
+    `,
+    [idAgendamento]
+  );
+
+  return result.rows[0];
+}
+
+async function recusarSolicitacao(idAgendamento) {
+  const result = await pool.query(
+    `
+    UPDATE agendamento
+    SET status_solicitacao = 'recusado'
+    WHERE id_agendamento = $1
+    RETURNING *
+    `,
+    [idAgendamento]
+  );
+
+  return result.rows[0];
+}
+
+async function completarSolicitacao(idAgendamento) {
+  const result = await pool.query(
+    `
+    UPDATE agendamento
+    SET status_solicitacao = 'concluido'
+    WHERE id_agendamento = $1
+    RETURNING *
+    `,
+    [idAgendamento]
+  );
+
+  return result.rows[0];
 }
 
 module.exports = {
@@ -108,5 +188,8 @@ module.exports = {
   deletePrestador,
   findByEmail,
   getSolicitacoesByPrestador,
+  aceitarSolicitacao,
+  recusarSolicitacao,
+  completarSolicitacao,
 };
 

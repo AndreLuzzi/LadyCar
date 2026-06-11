@@ -20,6 +20,12 @@ router.get('/', controller.listPrestadores);
 // Buscar por id
 router.get('/:id', controller.getPrestadorById);
 
+router.put('/aceitar-solicitacao/:id', controller.aceitarSolicitacao);
+
+router.put('/recusar-solicitacao/:id', controller.recusarSolicitacao);
+
+router.put('/completar-solicitacao/:id', controller.completarSolicitacao);
+
 // Atualizar
 router.put('/:id', controller.updatePrestador);
 

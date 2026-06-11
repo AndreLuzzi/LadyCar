@@ -441,10 +441,21 @@ async function loadServicos() {
             <p><strong>Serviço:</strong> ${ag.descricao}</p>
             <p><strong>Status:</strong> ${statusBadge}</p>
             ${prestadorInfo}
-            <div class="servico-actions">
-              <button class="btn-editar btn-primary" onclick="abrirTelaEdicao(${ag.id_agendamento}, '${ag.descricao}', '${ag.data}', '${ag.hora}')">✏️ Editar</button>
-              <button class="btn-cancelar btn-secondary" onclick="cancelarAgendamento(${ag.id_agendamento})">❌ Cancelar</button>
-            </div>
+            ${ag.status_solicitacao !== 'concluido' &&
+  ag.status_solicitacao !== 'recusado'
+  ? `
+<div class="servico-actions">
+  <button class="btn-editar btn-primary" onclick="abrirTelaEdicao(${ag.id_agendamento}, '${ag.descricao}', '${ag.data}', '${ag.hora}')">✏️ Editar</button>
+
+  <button class="btn-cancelar btn-secondary" onclick="cancelarAgendamento(${ag.id_agendamento})">❌ Cancelar</button>
+</div>
+`
+  : `
+<div class="servico-actions">
+  <p><strong>Serviço encerrado.</strong></p>
+</div>
+`
+}
             <hr>
           `;
           lista.appendChild(div);

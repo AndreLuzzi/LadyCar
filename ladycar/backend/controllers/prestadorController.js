@@ -132,6 +132,69 @@ async function getSolicitacoes(req, res) {
   }
 }
 
+async function aceitarSolicitacao(req, res) {
+  try {
+    const { id } = req.params;
+
+    const result = await model.aceitarSolicitacao(id);
+
+    if (!result) {
+      return res.status(404).json({
+        error: 'Solicitação não encontrada'
+      });
+    }
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: 'Erro ao aceitar solicitação'
+    });
+  }
+}
+
+async function recusarSolicitacao(req, res) {
+  try {
+    const { id } = req.params;
+
+    const result = await model.recusarSolicitacao(id);
+
+    if (!result) {
+      return res.status(404).json({
+        error: 'Solicitação não encontrada'
+      });
+    }
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: 'Erro ao recusar solicitação'
+    });
+  }
+}
+
+async function completarSolicitacao(req, res) {
+  try {
+    const { id } = req.params;
+
+    const result = await model.completarSolicitacao(id);
+
+    if (!result) {
+      return res.status(404).json({
+        error: 'Solicitação não encontrada'
+      });
+    }
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: 'Erro ao concluir solicitação'
+    });
+  }
+}
+
 module.exports = {
   createPrestador,
   loginPrestador,
@@ -141,4 +204,7 @@ module.exports = {
   updatePrestador,
   deletePrestador,
   getSolicitacoes,
+  aceitarSolicitacao,
+  recusarSolicitacao,
+  completarSolicitacao,
 };
