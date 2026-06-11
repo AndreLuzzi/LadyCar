@@ -985,3 +985,27 @@ body {
 .delete-btn {
     background-color: #dc3545 !important;
 }
+
+#avaliacaoScreen .service-details {
+    padding: 20px;
+}
+
+#avaliacaoScreen select,
+#avaliacaoScreen textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+
+    border: 1px solid transparent;
+    border-radius: 8px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+      0 0 0 1.5px #f49cc750,
+      0 1px 3px rgba(0,0,0,0.05);
+}
+
+#avaliacaoScreen textarea {
+    resize: vertical;
+}

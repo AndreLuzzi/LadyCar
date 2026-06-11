@@ -389,6 +389,62 @@
     </nav>
   </div>
 
+  <div id="avaliacaoScreen" class="hidden app-screen">
+    <div class="header-internal">
+        <span class="back-arrow" id="voltarParaServicosAvaliacao">⬅</span>
+        <h2>AVALIAR SERVIÇO</h2>
+    </div>
+
+    <div class="service-details">
+
+        <h3 class="selected-service-box" id="avaliacaoServicoNome">
+            Serviço Concluído
+        </h3>
+
+        <form id="avaliacaoForm">
+
+            <h4 class="form-section-title">
+                Sua Avaliação
+            </h4>
+
+            <select id="notaAvaliacao" required>
+                <option value="">Selecione uma nota</option>
+                <option value="5">⭐⭐⭐⭐⭐ - Excelente</option>
+                <option value="4">⭐⭐⭐⭐ - Muito bom</option>
+                <option value="3">⭐⭐⭐ - Bom</option>
+                <option value="2">⭐⭐ - Regular</option>
+                <option value="1">⭐ - Ruim</option>
+            </select>
+
+            <textarea
+              id="comentarioAvaliacao"
+                placeholder="Conte como foi o atendimento..."
+                rows="5"></textarea>
+
+            <button type="submit" class="btn-primary full-width">
+                ENVIAR AVALIAÇÃO
+            </button>
+
+            <button
+              type="button"
+              id="voltarAvaliacaoBtn"
+              class="btn-secondary full-width">
+              VOLTAR
+            </button>
+
+        </form>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item nav-home">🏠</a>
+        <a href="#" class="nav-item nav-search">🔍</a>
+        <a href="#" class="nav-item nav-cart active">🛒</a>
+        <a href="#" class="nav-item nav-chat">💬</a>
+        <a href="#" class="nav-item nav-profile">👤</a>
+    </nav>
+</div>
+
   <!-- Tela de Solicitações para Prestador -->
   <div id="solicitacoesScreen" class="hidden app-screen">
     <div class="header-internal">

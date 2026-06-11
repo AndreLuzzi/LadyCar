@@ -12,6 +12,10 @@ let AVAILABLE_SERVICES = [];
 // ⭐️ NOVO: Variável global para rastrear o agendamento em edição
 let AGENDAMENTO_EDITANDO = null;
 
+let AGENDAMENTO_AVALIANDO = null;
+
+let PRESTADOR_AVALIANDO = null;
+
 // ===================================
 // FUNÇÕES DE NAVEGAÇÃO ENTRE TELAS
 // ===================================
@@ -132,6 +136,29 @@ function showProfile() {
 function showEditarAgendamento() {
     hideAllScreens();
     document.getElementById("editarAgendamentoScreen").classList.remove("hidden");
+}
+
+function showAvaliacao(
+    idAgendamento,
+    descricao,
+    idPrestador
+) {
+
+    AGENDAMENTO_AVALIANDO =
+        idAgendamento;
+
+    PRESTADOR_AVALIANDO =
+        idPrestador;
+
+    hideAllScreens();
+
+    document
+        .getElementById("avaliacaoScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("avaliacaoServicoNome")
+        .textContent = descricao;
 }
 
 // =====================================
@@ -418,6 +445,7 @@ async function loadServicos() {
       } else {
         lista.innerHTML = "";
         data.forEach((ag) => {
+    console.log(JSON.stringify(ag, null, 2));
           const div = document.createElement("div");
           div.classList.add("servico-item");
           const dataFormatada = new Date(ag.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
@@ -452,10 +480,24 @@ async function loadServicos() {
 `
   : `
 <div class="servico-actions">
-  <p><strong>Serviço encerrado.</strong></p>
+
+  <button
+    class="btn-editar btn-primary"
+    onclick="showAvaliacao(
+    ${ag.id_agendamento},
+    '${ag.descricao}',
+    ${ag.id_prestador}
+)">
+
+    ⭐ Avaliar
+
+  </button>
+
 </div>
 `
 }
+
+
             <hr>
           `;
           lista.appendChild(div);
@@ -478,6 +520,16 @@ document.getElementById('btnPrestador') && document.getElementById('btnPrestador
 document.getElementById('goToPrestadorRegister') && document.getElementById('goToPrestadorRegister').addEventListener('click', (e) => { e.preventDefault(); showPrestadorRegister(); });
 document.getElementById('backToPrestadorLogin') && document.getElementById('backToPrestadorLogin').addEventListener('click', (e) => { e.preventDefault(); showPrestadorLogin(); });
 document.getElementById('backToClientLogin') && document.getElementById('backToClientLogin').addEventListener('click', (e) => { e.preventDefault(); showLogin(); });
+
+document.getElementById("voltarAvaliacaoBtn")
+&& document.getElementById("voltarAvaliacaoBtn")
+.addEventListener("click", () => {
+
+    AGENDAMENTO_AVALIANDO = null;
+
+    showServicos();
+
+});
 
 // Login
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
@@ -766,4 +818,82 @@ document.getElementById("editarAgendamentoForm") && document.getElementById("edi
     const novaData = document.getElementById("editarData").value;
     const novaHora = document.getElementById("editarHora").value;
     await salvarEdicaoAgendamento(novaData, novaHora);
+});
+
+document.getElementById("avaliacaoForm")
+&& document.getElementById("avaliacaoForm")
+.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const user = JSON.parse(
+        localStorage.getItem("user")
+    );
+
+    const nota = parseInt(
+        document.getElementById("notaAvaliacao").value
+    );
+
+    const comentario =
+        document.getElementById("comentarioAvaliacao").value;
+
+    try {
+
+        const res = await fetch(
+            `${API_URL}/avaliacoes`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+
+                    id_agendamento:
+                        AGENDAMENTO_AVALIANDO,
+
+                    id_cliente:
+                        user.id,
+
+                    id_prestador:
+                        PRESTADOR_AVALIANDO,
+
+                    nota,
+                    comentario
+
+                })
+            }
+        );
+
+        const data = await res.json();
+
+        if (res.ok) {
+
+            alert(
+                "Avaliação enviada com sucesso!"
+            );
+
+            AGENDAMENTO_AVALIANDO = null;
+            PRESTADOR_AVALIANDO = null;
+
+            showServicos();
+
+        } else {
+
+            alert(
+                data.error ||
+                "Erro ao salvar avaliação"
+            );
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert(
+            "Erro ao conectar com o servidor."
+        );
+
+    }
+
 });

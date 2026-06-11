@@ -425,7 +425,9 @@ app.post("/forgot-password", async (req, res) => {
 // Inicia o servidor
 // Import prestador routes
 const prestadorRoutes = require("./routes/prestadorRoutes");
+const avaliacaoRoutes = require('./routes/avaliacaoRoutes');
 app.use("/prestadores", prestadorRoutes);
+app.use('/avaliacoes', avaliacaoRoutes);
 
 app.listen(3000, () => {
   console.log("Servidor rodando em http://localhost:3000");
