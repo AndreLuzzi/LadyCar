@@ -79,24 +79,96 @@
   <div id="prestadorProfileScreen" class="hidden app-screen">
 
     <div class="header-internal">
-        <h2>Perfil Prestador</h2>
+        <h2>MEU PERFIL E CADASTRO</h2>
     </div>
 
-    <div class="service-details">
-        <div id="perfilContent"></div>
+    <div class="profile-content">
 
-        <button id="sairBtn" class="btn-secondary full-width">
-            Sair
+        <div class="profile-intro">
+            <div class="profile-icon">👤</div>
+
+            <p>
+                Olá,
+                <strong id="prestadorProfileName">Prestador</strong>
+            </p>
+
+            <p id="prestadorAvaliacaoMedia">
+                ⭐ 0.0 / 5.0
+            </p>
+        </div>
+
+        <form id="prestadorUpdateForm">
+
+            <h4 class="form-section-title">
+                Dados Cadastrais
+            </h4>
+
+            <input type="text" id="prestadorNome" placeholder="Nome">
+
+            <input type="email" id="prestadorEmail" readonly>
+
+            <input type="text" id="prestadorTelefone" maxlength="15" placeholder="Telefone">
+
+            <input type="text" id="prestadorCpf" maxlength="14" placeholder="CPF">
+
+            <h4 class="form-section-title">
+                Informações Profissionais
+            </h4>
+
+            <input type="text" id="prestadorCategoria" readonly>
+
+            <textarea
+                id="prestadorDescricao"
+                placeholder="Descrição"
+                rows="3">
+            </textarea>
+
+            <h4 class="form-section-title">
+                Endereço
+            </h4>
+
+            <input type="text" id="prestadorCep" maxlength="9" placeholder="CEP">
+
+            <input type="text" id="prestadorEndereco" placeholder="Endereço">
+
+            <input type="number" id="prestadorNumero" min="1" max="9999" placeholder="Número">
+
+            <input type="text" id="prestadorBairro" placeholder="Bairro">
+
+            <input type="text" id="prestadorComplemento" placeholder="Complemento">
+
+            <input type="text" id="prestadorCidade" placeholder="Cidade">
+
+            <input type="text" id="prestadorEstado" placeholder="Estado">
+
+            <button
+                type="submit"
+                class="btn-primary full-width save-btn">
+
+                SALVAR ALTERAÇÕES
+
+            </button>
+
+        </form>
+
+        <button
+            id="deletePrestadorBtn"
+            class="btn-primary full-width delete-btn">
+
+            EXCLUIR CONTA
+
+        </button>
+
+        <button
+            id="sairBtn"
+            class="btn-secondary full-width"
+            style="margin-top:10px;">
+
+            SAIR / LOGOUT
+
         </button>
     </div>
-
-    <nav class="bottom-nav prestador-nav">
-        <a href="#" class="nav-item nav-prestador-solicitacoes">📋</a>
-        <a href="#" class="nav-item nav-prestador-avaliacoes">⭐</a>
-        <a href="#" class="nav-item nav-prestador-chat">💬</a>
-        <a href="#" class="nav-item nav-prestador-profile active">👤</a>
-    </nav>
-
+</div>
 </div>
 
   <div id="prestadorListScreen" class="hidden app-screen">
@@ -321,7 +393,7 @@
 
  <div id="profileScreen" class="hidden app-screen">
     <div class="header-internal">
-        <h2>MEU PERFIL & CADASTRO</h2>
+        <h2>MEU PERFIL E CADASTRO</h2>
     </div>
 
     <div class="profile-content">
@@ -489,8 +561,8 @@
 </nav>
   </div>
 
-  <script src="js/solicitacoes.js"></script>
-  <script src="js/prestador.js"></script>
-  <script src="js/script.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/prestador.js"></script>
+    <script src="js/solicitacoes.js"></script>
 </body>
 </html>

@@ -80,10 +80,25 @@ async function listPrestadores() {
 async function updatePrestador(id, prestador) {
   const query = `
     UPDATE prestador_servico SET
-      nome=$1, cpf=$2, telefone=$3, email=$4, categoria=$5, descricao=$6, cidade=$7, estado=$8, avaliacao=$9, ativo=$10
-    WHERE id_prestador=$11
+      nome=$1,
+      cpf=$2,
+      telefone=$3,
+      email=$4,
+      categoria=$5,
+      descricao=$6,
+      cidade=$7,
+      estado=$8,
+      avaliacao=$9,
+      ativo=$10,
+      cep=$11,
+      endereco=$12,
+      numero=$13,
+      bairro=$14,
+      complemento=$15
+    WHERE id_prestador=$16
     RETURNING *
   `;
+
   const values = [
     prestador.nome,
     prestador.cpf,
@@ -95,8 +110,14 @@ async function updatePrestador(id, prestador) {
     prestador.estado || null,
     prestador.avaliacao || 0,
     prestador.ativo === undefined ? true : prestador.ativo,
-    id,
+    prestador.cep || null,
+    prestador.endereco || null,
+    prestador.numero || null,
+    prestador.bairro || null,
+    prestador.complemento || null,
+    id
   ];
+
   const result = await pool.query(query, values);
   return result.rows[0];
 }

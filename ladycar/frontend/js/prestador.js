@@ -98,45 +98,76 @@ if (document.getElementById('loginPrestadorForm')) {
 }
 
 function renderPrestadorProfile() {
-  const content = document.getElementById('perfilContent');
-  if (!content) return;
 
   const user = JSON.parse(localStorage.getItem('prestador'));
-  if (!user) {
-    content.innerHTML = '<p>Não autenticado. <a href="#" id="linkToPrestadorLogin">Entrar</a></p>';
-    const l = document.getElementById('linkToPrestadorLogin');
-    if (l) l.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (typeof showPrestadorLogin === 'function') showPrestadorLogin();
-      else window.location.href = 'loginPrestador.html';
-    });
-  } else {
-    content.innerHTML = `
-  <p><strong>Nome:</strong> ${user.nome}</p>
-  <p><strong>Email:</strong> ${user.email}</p>
-  <p><strong>Categoria:</strong> ${user.categoria}</p>
-  <p><strong>Cidade/Estado:</strong> ${user.cidade || ''} / ${user.estado || ''}</p>
-  <p><strong>Descrição:</strong> ${user.descricao || ''}</p>
 
-  <hr>
+   if (!user) {
+    return;
+}
 
-  <p>
-    <strong>Avaliação Média:</strong>
-    ${user.avaliacao || 0} ⭐
-  </p>
-`;
-  }
+  document.getElementById('prestadorProfileName').textContent =
+    user.nome || 'Prestador';
+
+  document.getElementById('prestadorAvaliacaoMedia').innerHTML =
+    `⭐ ${user.avaliacao || 0} / 5.0`;
+
+  document.getElementById('prestadorNome').value =
+    user.nome || '';
+
+  document.getElementById('prestadorEmail').value =
+    user.email || '';
+
+  document.getElementById('prestadorTelefone').value =
+    user.telefone || '';
+
+  document.getElementById('prestadorCpf').value =
+    user.cpf || '';
+
+  document.getElementById('prestadorCategoria').value =
+    user.categoria || '';
+
+  document.getElementById('prestadorDescricao').value =
+    user.descricao || '';
+
+  document.getElementById('prestadorCep').value =
+    user.cep || '';
+
+  document.getElementById('prestadorEndereco').value =
+    user.endereco || '';
+
+  document.getElementById('prestadorNumero').value =
+    user.numero || '';
+
+  document.getElementById('prestadorBairro').value =
+    user.bairro || '';
+
+  document.getElementById('prestadorComplemento').value =
+    user.complemento || '';
+
+  document.getElementById('prestadorCidade').value =
+    user.cidade || '';
+
+  document.getElementById('prestadorEstado').value =
+    user.estado || '';
 }
 
 // Perfil prestador
-if (document.getElementById('perfilContent')) {
+if (document.getElementById('prestadorProfileScreen')) {
+
   renderPrestadorProfile();
+
   const sairBtn = document.getElementById('sairBtn');
+
   if (sairBtn) {
+
     sairBtn.addEventListener('click', () => {
+
       localStorage.removeItem('prestador');
-      if (typeof showPrestadorLogin === 'function') showPrestadorLogin();
-      else window.location.href = 'loginPrestador.html';
+
+      if (typeof showPrestadorLogin === 'function') {
+        showPrestadorLogin();
+      }
+
     });
   }
 }
@@ -169,4 +200,216 @@ if (document.getElementById('prestadoresList')) {
 
   filter.addEventListener('change', () => loadPrestadores(filter.value));
   loadPrestadores('');
+}
+
+const prestadorUpdateForm = document.getElementById('prestadorUpdateForm');
+
+if (prestadorUpdateForm) {
+
+  prestadorUpdateForm.addEventListener('submit', async (e) => {
+
+    e.preventDefault();
+
+    const prestador = JSON.parse(
+      localStorage.getItem('prestador')
+    );
+
+    const body = {
+      nome: document.getElementById('prestadorNome').value,
+      cpf: document.getElementById('prestadorCpf').value,
+      telefone: document.getElementById('prestadorTelefone').value,
+      email: document.getElementById('prestadorEmail').value,
+      categoria: document.getElementById('prestadorCategoria').value,
+      descricao: document.getElementById('prestadorDescricao').value,
+
+      cidade: document.getElementById('prestadorCidade').value,
+      estado: document.getElementById('prestadorEstado').value,
+
+      cep: document.getElementById('prestadorCep').value,
+      endereco: document.getElementById('prestadorEndereco').value,
+      numero: document.getElementById('prestadorNumero').value,
+      bairro: document.getElementById('prestadorBairro').value,
+      complemento: document.getElementById('prestadorComplemento').value,
+
+      avaliacao: prestador.avaliacao,
+      ativo: prestador.ativo
+    };
+
+    try {
+
+      const response = await fetch(
+
+        `${PRESTADOR_API_URL}/${prestador.id_prestador}`,
+
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        }
+
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+
+        alert(data.error || 'Erro ao atualizar');
+
+        return;
+      }
+
+      localStorage.setItem(
+        'prestador',
+        JSON.stringify(data)
+      );
+
+      alert('Alterações salvas com sucesso!');
+
+      renderPrestadorProfile();
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert('Erro ao conectar com o servidor');
+
+    }
+
+  });
+
+}
+
+function somenteNumeros(idCampo) {
+
+    const campo = document.getElementById(idCampo);
+
+    if (!campo) return;
+
+    campo.addEventListener('input', () => {
+
+        campo.value = campo.value.replace(/\D/g, '');
+
+    });
+
+}
+
+somenteNumeros('prestadorTelefone');
+somenteNumeros('prestadorCpf');
+somenteNumeros('prestadorCep');
+somenteNumeros('prestadorNumero');
+
+// =====================
+// MÁSCARAS
+// =====================
+function mascaraCPF(campo) {
+    campo.addEventListener('input', () => {
+
+        let valor = campo.value.replace(/\D/g, '');
+
+        valor = valor.substring(0, 11);
+
+        valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+        valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+        valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+
+        campo.value = valor;
+
+    });
+
+}
+
+function mascaraCEP(campo) {
+    campo.addEventListener('input', () => {
+
+        let valor = campo.value.replace(/\D/g, '');
+
+        valor = valor.substring(0, 8);
+
+        valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+
+        campo.value = valor;
+
+    });
+
+}
+
+function mascaraTelefone(campo) {
+    campo.addEventListener('input', () => {
+
+        let valor = campo.value.replace(/\D/g, '');
+
+        valor = valor.substring(0, 11);
+
+        valor = valor.replace(/^(\d{2})(\d)/g, '($1) $2');
+
+        valor = valor.replace(/(\d)(\d{4})$/, '$1-$2');
+
+        campo.value = valor;
+
+    });
+
+}
+
+function mascaraNumero(campo) {
+    campo.addEventListener('input', () => {
+
+        let valor = campo.value.replace(/\D/g, '');
+
+        valor = valor.substring(0, 4);
+
+        campo.value = valor;
+
+    });
+
+}
+
+const cpfInput = document.getElementById('prestadorCpf');
+
+if (cpfInput) {
+    mascaraCPF(cpfInput);
+}
+
+const cepInput = document.getElementById('prestadorCep');
+
+if (cepInput) {
+    mascaraCEP(cepInput);
+}
+
+const telefoneInput = document.getElementById('prestadorTelefone');
+
+if (telefoneInput) {
+    mascaraTelefone(telefoneInput);
+}
+
+const numeroInput =
+    document.getElementById('prestadorNumero');
+
+if (numeroInput) {
+    mascaraNumero(numeroInput);
+}
+
+const cpfCadastro = document.getElementById('cpf');
+
+if (cpfCadastro) {
+    mascaraCPF(cpfCadastro);
+}
+
+const telefoneCadastro = document.getElementById('telefone');
+
+if (telefoneCadastro) {
+    mascaraTelefone(telefoneCadastro);
+}
+
+const cepCadastro = document.getElementById('cep');
+
+if (cepCadastro) {
+    mascaraCEP(cepCadastro);
+}
+
+const numeroCadastro = document.getElementById('numero');
+
+if (numeroCadastro) {
+    mascaraNumero(numeroCadastro);
 }

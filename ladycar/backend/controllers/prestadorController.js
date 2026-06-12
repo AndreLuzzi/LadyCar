@@ -59,25 +59,53 @@ async function createPrestador(req, res) {
 
 async function loginPrestador(req, res) {
   try {
+
     const { email, senha } = req.body;
+
     const user = await model.findByEmail(email);
+
     if (!user) {
-      console.warn(`Tentativa login prestador falhou: email não encontrado -> ${email}`);
-      return res.status(400).json({ error: 'Prestador não encontrado' });
-    }
-    
-    if (!valid) {
-      console.warn(`Tentativa login prestador falhou: senha incorreta -> ${email}`);
-      return res.status(400).json({ error: 'Senha incorreta' });
+      console.warn(
+        `Tentativa login prestador falhou: email não encontrado -> ${email}`
+      );
+
+      return res.status(400).json({
+        error: 'Prestador não encontrado'
+      });
     }
 
-    // don't return senha
+    const valid = await bcrypt.compare(
+      senha,
+      user.senha
+    );
+
+    if (!valid) {
+
+      console.warn(
+        `Tentativa login prestador falhou: senha incorreta -> ${email}`
+      );
+
+      return res.status(400).json({
+        error: 'Senha incorreta'
+      });
+    }
+
     const { senha: _, ...safe } = user;
-    console.log(`Prestador autenticado: email=${email}, id=${user.id_prestador}`);
+
+    console.log(
+      `Prestador autenticado: email=${email}, id=${user.id_prestador}`
+    );
+
     res.json(safe);
+
   } catch (err) {
+
     console.error('Erro loginPrestador', err);
-    res.status(500).json({ error: 'Erro ao autenticar' });
+
+    res.status(500).json({
+      error: 'Erro ao autenticar'
+    });
+
   }
 }
 
