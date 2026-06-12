@@ -81,9 +81,24 @@ SELECT * FROM prestador_servico;
 SELECT * FROM agendamento;
 SELECT * FROM cliente;
 SELECT * FROM servicos;
+SELECT * FROM avaliacao;
+SELECT * FROM cliente LIMIT 1;
+
+SELECT
+    id_prestador,
+    nome,
+    categoria,
+    avaliacao
+FROM prestador_servico;
+
 SELECT id_prestador, nome, email
 FROM prestador_servico
 ORDER BY id_prestador;
+
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = 'prestador_servico'
+ORDER BY ordinal_position;
 
 SELECT table_name
 FROM information_schema.tables
@@ -132,3 +147,42 @@ CREATE TABLE avaliacao (
         FOREIGN KEY (id_prestador)
         REFERENCES prestador_servico(id_prestador)
 );
+
+ALTER TABLE prestador_servico
+ADD COLUMN cep VARCHAR(20),
+ADD COLUMN endereco VARCHAR(255),
+ADD COLUMN numero VARCHAR(20),
+ADD COLUMN bairro VARCHAR(100),
+ADD COLUMN complemento VARCHAR(255);
+
+SELECT
+id_prestador,
+nome,
+email,
+senha
+FROM prestador_servico
+WHERE email = 'test4@gmail.com';
+
+SELECT
+    id_prestador,
+    nome,
+    cep,
+    endereco,
+    numero,
+    bairro,
+    complemento
+FROM prestador_servico
+WHERE id_prestador = 21;
+
+SELECT
+    column_name,
+    data_type
+FROM information_schema.columns
+WHERE table_name = 'prestador_servico';
+
+SELECT
+  id_prestador,
+  nome,
+  ativo
+FROM prestador_servico
+WHERE id_prestador = 21;
