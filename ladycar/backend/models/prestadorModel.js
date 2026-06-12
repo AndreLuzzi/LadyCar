@@ -3,10 +3,33 @@ const pool = require('../db');
 async function createPrestador(prestador) {
   const query = `
     INSERT INTO prestador_servico
-    (nome, cpf, telefone, email, senha, categoria, descricao, cidade, estado, avaliacao, ativo)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+    (
+      nome,
+      cpf,
+      telefone,
+      email,
+      senha,
+      categoria,
+      descricao,
+      cidade,
+      estado,
+      cep,
+      endereco,
+      numero,
+      bairro,
+      complemento,
+      avaliacao,
+      ativo
+    )
+    VALUES
+    (
+      $1,$2,$3,$4,$5,$6,$7,$8,$9,
+      $10,$11,$12,$13,$14,
+      $15,$16
+    )
     RETURNING *
   `;
+
   const values = [
     prestador.nome,
     prestador.cpf,
@@ -17,11 +40,19 @@ async function createPrestador(prestador) {
     prestador.descricao || null,
     prestador.cidade || null,
     prestador.estado || null,
+
+    prestador.cep || null,
+    prestador.endereco || null,
+    prestador.numero || null,
+    prestador.bairro || null,
+    prestador.complemento || null,
+
     prestador.avaliacao || 0,
     prestador.ativo === undefined ? true : prestador.ativo,
   ];
 
   const result = await pool.query(query, values);
+
   return result.rows[0];
 }
 

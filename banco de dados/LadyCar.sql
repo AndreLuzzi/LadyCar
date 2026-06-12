@@ -80,6 +80,7 @@ INSERT INTO servicos (nome_servico, descricao_servico) VALUES
 SELECT * FROM prestador_servico;
 SELECT * FROM agendamento;
 SELECT * FROM cliente;
+SELECT * FROM servicos;
 SELECT id_prestador, nome, email
 FROM prestador_servico
 ORDER BY id_prestador;
@@ -110,3 +111,24 @@ JOIN information_schema.constraint_column_usage AS ccu
     ON ccu.constraint_name = tc.constraint_name
 WHERE tc.constraint_type = 'FOREIGN KEY';
 
+CREATE TABLE avaliacao (
+    id_avaliacao SERIAL PRIMARY KEY,
+    id_agendamento INTEGER NOT NULL,
+    id_cliente INTEGER NOT NULL,
+    id_prestador INTEGER NOT NULL,
+    nota INTEGER NOT NULL CHECK (nota BETWEEN 1 AND 5),
+    comentario TEXT,
+    data_avaliacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_avaliacao_agendamento
+        FOREIGN KEY (id_agendamento)
+        REFERENCES agendamento(id_agendamento),
+
+    CONSTRAINT fk_avaliacao_cliente
+        FOREIGN KEY (id_cliente)
+        REFERENCES cliente(id_cliente),
+
+    CONSTRAINT fk_avaliacao_prestador
+        FOREIGN KEY (id_prestador)
+        REFERENCES prestador_servico(id_prestador)
+);

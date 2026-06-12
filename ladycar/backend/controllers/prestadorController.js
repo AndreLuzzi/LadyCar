@@ -3,7 +3,22 @@ const model = require('../models/prestadorModel');
 
 async function createPrestador(req, res) {
   try {
-    const { nome, cpf, telefone, email, senha, categoria, descricao, cidade, estado } = req.body;
+    const {
+      nome,
+      cpf,
+      telefone,
+      email,
+      senha,
+      categoria,
+      descricao,
+      cidade,
+      estado,
+      cep,
+      endereco,
+      numero,
+      bairro,
+      complemento
+    } = req.body;
 
     // checar email existente
     const existing = await model.findByEmail(email);
@@ -11,6 +26,7 @@ async function createPrestador(req, res) {
     if (existing) return res.status(400).json({ error: 'Email já cadastrado' });
 
     const hash = await bcrypt.hash(senha, 10);
+
     const prestador = await model.createPrestador({
       nome,
       cpf,
@@ -21,12 +37,20 @@ async function createPrestador(req, res) {
       descricao,
       cidade,
       estado,
+
+      cep,
+      endereco,
+      numero,
+      bairro,
+      complemento,
+
       avaliacao: 0,
       ativo: true,
     });
 
     console.log(`Prestador criado: email=${email}, id=${prestador.id_prestador}`);
     res.status(201).json(prestador);
+
   } catch (err) {
     console.error('Erro createPrestador', err);
     res.status(500).json({ error: 'Erro ao criar prestador' });
@@ -41,8 +65,7 @@ async function loginPrestador(req, res) {
       console.warn(`Tentativa login prestador falhou: email não encontrado -> ${email}`);
       return res.status(400).json({ error: 'Prestador não encontrado' });
     }
-
-    const valid = await bcrypt.compare(senha, user.senha);
+    
     if (!valid) {
       console.warn(`Tentativa login prestador falhou: senha incorreta -> ${email}`);
       return res.status(400).json({ error: 'Senha incorreta' });

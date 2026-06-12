@@ -31,11 +31,17 @@ if (document.getElementById('cadastroPrestadorForm')) {
       cpf: document.getElementById('cpf').value,
       telefone: document.getElementById('telefone').value,
       email: document.getElementById('emailPrestadorCadastro').value,
-      senha: document.getElementById('senha').value,
+      senha: document.getElementById('senhaPrestadorCadastro').value,
       categoria: document.getElementById('categoria').value,
       descricao: document.getElementById('descricao').value,
       cidade: document.getElementById('cidade').value,
       estado: document.getElementById('estado').value,
+
+      cep: document.getElementById('cep').value,
+      endereco: document.getElementById('endereco').value,
+      numero: document.getElementById('numero').value,
+      bairro: document.getElementById('bairro').value,
+      complemento: document.getElementById('complemento').value
     };
     
     try {
@@ -66,7 +72,7 @@ if (document.getElementById('loginPrestadorForm')) {
     e.preventDefault();
     const body = {
       email: document.getElementById('emailPrestadorLogin').value,
-      senha: document.getElementById('senha').value,
+      senha: document.getElementById('senhaPrestadorLogin').value,
     };
     try {
       const res = await fetch(PRESTADOR_API_URL + '/login', {
@@ -79,7 +85,11 @@ if (document.getElementById('loginPrestadorForm')) {
       if (!res.ok) return alert(data.error || 'Erro ao autenticar');
       // salvar sessao simples
       localStorage.setItem('prestador', JSON.stringify(data));
-      navigateToPrestadorProfile();
+        if (typeof showSolicitacoes === 'function') {
+          showSolicitacoes();
+        } else {
+          navigateToPrestadorProfile();
+        }
     } catch (err) {
       console.error(err);
       alert('Erro ao conectar com o servidor');
@@ -102,21 +112,19 @@ function renderPrestadorProfile() {
     });
   } else {
     content.innerHTML = `
-      <p><strong>Nome:</strong> ${user.nome}</p>
-      <p><strong>Email:</strong> ${user.email}</p>
-      <p><strong>Categoria:</strong> ${user.categoria}</p>
-      <p><strong>Cidade/Estado:</strong> ${user.cidade || ''} / ${user.estado || ''}</p>
-      <p><strong>Descrição:</strong> ${user.descricao || ''}</p>
-      <button id="verSolicitacoesBtn" class="btn-primary full-width" style="margin-top:15px;">Ver Solicitações</button>
-    `;
+  <p><strong>Nome:</strong> ${user.nome}</p>
+  <p><strong>Email:</strong> ${user.email}</p>
+  <p><strong>Categoria:</strong> ${user.categoria}</p>
+  <p><strong>Cidade/Estado:</strong> ${user.cidade || ''} / ${user.estado || ''}</p>
+  <p><strong>Descrição:</strong> ${user.descricao || ''}</p>
 
-    const btnSolicitacoes = document.getElementById('verSolicitacoesBtn');
-    if (btnSolicitacoes) {
-      btnSolicitacoes.addEventListener('click', () => {
-        if (typeof showSolicitacoes === 'function') showSolicitacoes();
-        else alert('Função showSolicitacoes não disponível');
-      });
-    }
+  <hr>
+
+  <p>
+    <strong>Avaliação Média:</strong>
+    ${user.avaliacao || 0} ⭐
+  </p>
+`;
   }
 }
 

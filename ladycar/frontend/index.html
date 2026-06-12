@@ -33,7 +33,7 @@
       <h3>Login Prestador</h3>
       <form id="loginPrestadorForm">
         <input type="email" id="emailPrestadorLogin" placeholder="E-mail" required />
-        <input type="password" id="senha" placeholder="Senha" required />
+        <input type="password" id="senhaPrestadorLogin" placeholder="Senha" required />
         <button type="submit" class="btn-primary">Entrar</button>
       </form>
       <p class="register-text">Não tem conta? <a href="#" id="goToPrestadorRegister">Cadastre-se</a></p>
@@ -50,7 +50,7 @@
         <input type="text" id="cpf" placeholder="CPF" required />
         <input type="text" id="telefone" placeholder="Telefone" />
         <input type="email" id="emailPrestadorCadastro" placeholder="E-mail" required />
-        <input type="password" id="senha" placeholder="Senha" required />
+       <input type="password" id="senhaPrestadorCadastro" placeholder="Senha" required />
         <select id="categoria" required>
           <option value="">Selecione a categoria</option>
           <option>Mecânico</option>
@@ -65,6 +65,11 @@
         <textarea id="descricao" placeholder="Descrição / Especialidades"></textarea>
         <input type="text" id="cidade" placeholder="Cidade" />
         <input type="text" id="estado" placeholder="Estado" />
+        <input type="text" id="cep" placeholder="CEP" />
+        <input type="text" id="endereco" placeholder="Endereço" />
+        <input type="text" id="numero" placeholder="Número" />
+        <input type="text" id="bairro" placeholder="Bairro" />
+        <input type="text" id="complemento" placeholder="Complemento" />
         <button type="submit" class="btn-primary">Cadastrar</button>
       </form>
       <button type="button" id="backToPrestadorLogin" class="btn-secondary">Voltar</button>
@@ -72,14 +77,27 @@
   </div>
 
   <div id="prestadorProfileScreen" class="hidden app-screen">
+
     <div class="header-internal">
-      <h2>Perfil Prestador</h2>
+        <h2>Perfil Prestador</h2>
     </div>
+
     <div class="service-details">
-      <div id="perfilContent"></div>
-      <button id="sairBtn" class="btn-secondary full-width">Sair</button>
+        <div id="perfilContent"></div>
+
+        <button id="sairBtn" class="btn-secondary full-width">
+            Sair
+        </button>
     </div>
-  </div>
+
+    <nav class="bottom-nav prestador-nav">
+        <a href="#" class="nav-item nav-prestador-solicitacoes">📋</a>
+        <a href="#" class="nav-item nav-prestador-avaliacoes">⭐</a>
+        <a href="#" class="nav-item nav-prestador-chat">💬</a>
+        <a href="#" class="nav-item nav-prestador-profile active">👤</a>
+    </nav>
+
+</div>
 
   <div id="prestadorListScreen" class="hidden app-screen">
     <div class="header-internal">
@@ -463,13 +481,12 @@
       </div>
       <div id="solicitacoesList"></div>
     </div>
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item nav-home">🏠</a>
-        <a href="#" class="nav-item nav-search">🔍</a>
-        <a href="#" class="nav-item nav-cart">🛒</a>
-        <a href="#" class="nav-item nav-chat">💬</a>
-        <a href="#" class="nav-item nav-profile">👤</a>
-    </nav>
+    <nav class="bottom-nav prestador-nav">
+    <a href="#" class="nav-item nav-prestador-solicitacoes active">📋</a>
+    <a href="#" class="nav-item nav-prestador-avaliacoes">⭐</a>
+    <a href="#" class="nav-item nav-prestador-chat">💬</a>
+    <a href="#" class="nav-item nav-prestador-profile">👤</a>
+</nav>
   </div>
 
   <script src="js/solicitacoes.js"></script>

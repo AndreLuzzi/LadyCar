@@ -897,3 +897,35 @@ document.getElementById("avaliacaoForm")
     }
 
 });
+
+document.querySelectorAll(".nav-prestador-solicitacoes")
+.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        showSolicitacoes();
+    });
+});
+
+document.querySelectorAll(".nav-prestador-profile")
+.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        showPrestadorProfile();
+    });
+});
+
+document.querySelectorAll(".nav-prestador-chat")
+.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        alert("Chat em desenvolvimento");
+    });
+});
+
+document.querySelectorAll(".nav-prestador-avaliacoes")
+.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        alert("Tela de avaliações será implementada em seguida");
+    });
+});
