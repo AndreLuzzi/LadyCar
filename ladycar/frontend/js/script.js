@@ -906,6 +906,14 @@ document.querySelectorAll(".nav-prestador-solicitacoes")
     });
 });
 
+document.querySelectorAll(".nav-prestador-avaliacoes")
+.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        showPrestadorAvaliacoes();
+    });
+});
+
 document.querySelectorAll(".nav-prestador-profile")
 .forEach(btn => {
     btn.addEventListener("click", (e) => {
@@ -918,14 +926,6 @@ document.querySelectorAll(".nav-prestador-chat")
 .forEach(btn => {
     btn.addEventListener("click", (e) => {
         e.preventDefault();
-        alert("Chat em desenvolvimento");
-    });
-});
-
-document.querySelectorAll(".nav-prestador-avaliacoes")
-.forEach(btn => {
-    btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        alert("Tela de avaliações será implementada em seguida");
+        alert("Chat em desenvolvimento.");
     });
 });

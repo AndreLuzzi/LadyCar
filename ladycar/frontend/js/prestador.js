@@ -66,6 +66,20 @@ if (document.getElementById('cadastroPrestadorForm')) {
   });
 }
 
+function showPrestadorAvaliacoes() {
+
+    hideAllScreens();
+
+    document
+        .getElementById(
+            'prestadorAvaliacoesScreen'
+        )
+        .classList.remove('hidden');
+
+    loadPrestadorAvaliacoes();
+
+}
+
 // Login prestador
 if (document.getElementById('loginPrestadorForm')) {
   document.getElementById('loginPrestadorForm').addEventListener('submit', async (e) => {
@@ -151,6 +165,86 @@ function renderPrestadorProfile() {
     user.estado || '';
 }
 
+async function loadPrestadorAvaliacoes() {
+
+    const prestador =
+        JSON.parse(localStorage.getItem('prestador'));
+
+    if (!prestador) return;
+
+    try {
+
+        const res = await fetch(
+            `${API_URL}/avaliacoes/prestador/${prestador.id_prestador}`
+        );
+
+        const avaliacoes = await res.json();
+        const totalAvaliacoes = avaliacoes.length;
+        const lista =
+            document.getElementById(
+                'listaAvaliacoesPrestador'
+            );
+
+        const media =
+            document.getElementById(
+                'prestadorMediaTexto'
+            );
+
+        media.textContent =
+            `${prestador.avaliacao || 0} / 5.0`;
+          
+            document.getElementById('prestadorTotalAvaliacoes').textContent =`Total de avaliações: ${totalAvaliacoes}`;
+
+        if (!avaliacoes.length) {
+
+            lista.innerHTML =
+                '<p>Nenhuma avaliação recebida.</p>';
+
+            return;
+        }
+
+        lista.innerHTML = '';
+
+        avaliacoes.forEach(av => {
+
+                      lista.innerHTML += `
+              <div class="servico-item">
+
+                  <p>
+                      <strong>
+                          Cliente:
+                      </strong>
+
+                      ${av.cliente_nome}
+                  </p>
+
+                  <p>
+                      ${'⭐'.repeat(av.nota)}
+                  </p>
+
+                  <p>
+                      ${av.comentario || 'Sem comentário'}
+                  </p>
+
+                  <p>
+                      ${new Date(
+                          av.data_avaliacao
+                      ).toLocaleDateString('pt-BR')}
+                  </p>
+
+              </div>
+          `;
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
 // Perfil prestador
 if (document.getElementById('prestadorProfileScreen')) {
 
@@ -169,7 +263,73 @@ if (document.getElementById('prestadorProfileScreen')) {
       }
 
     });
+
   }
+
+  const deleteBtn =
+    document.getElementById('deletePrestadorBtn');
+
+  if (deleteBtn) {
+
+    deleteBtn.addEventListener('click', async () => {
+
+      const confirmar = confirm(
+        'Tem certeza que deseja excluir sua conta?'
+      );
+
+      if (!confirmar) return;
+
+      const prestador =
+        JSON.parse(
+          localStorage.getItem('prestador')
+        );
+
+      try {
+
+        const res = await fetch(
+          `${PRESTADOR_API_URL}/${prestador.id_prestador}`,
+          {
+            method: 'DELETE'
+          }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+
+          return alert(
+            data.error ||
+            'Erro ao excluir conta'
+          );
+
+        }
+
+        alert(
+          'Conta excluída com sucesso.'
+        );
+
+        localStorage.removeItem(
+          'prestador'
+        );
+
+        if (typeof showPrestadorLogin === 'function') {
+          showPrestadorLogin();
+        }
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          'Erro ao conectar ao servidor.'
+        );
+
+      }
+
+    });
+
+  }
+
 }
 
 // Listar prestadores

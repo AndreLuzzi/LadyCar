@@ -74,6 +74,14 @@ async function loginPrestador(req, res) {
       });
     }
 
+    if (!user.ativo) {
+
+      return res.status(400).json({
+        error: 'Conta desativada'
+      });
+
+    }
+
     const valid = await bcrypt.compare(
       senha,
       user.senha

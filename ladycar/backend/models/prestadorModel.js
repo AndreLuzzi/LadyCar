@@ -123,8 +123,19 @@ async function updatePrestador(id, prestador) {
 }
 
 async function deletePrestador(id) {
-  const result = await pool.query('DELETE FROM prestador_servico WHERE id_prestador=$1 RETURNING *', [id]);
+
+  const result = await pool.query(
+    `
+    UPDATE prestador_servico
+    SET ativo = false
+    WHERE id_prestador = $1
+    RETURNING *
+    `,
+    [id]
+  );
+
   return result.rows[0];
+
 }
 
 async function findByEmail(email) {

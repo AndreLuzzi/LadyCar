@@ -50,8 +50,49 @@ async function atualizarMediaPrestador(idPrestador, media) {
     );
 }
 
+async function listarAvaliacoesPrestador(idPrestador) {
+
+    const result = await pool.query(
+        `
+        SELECT
+            a.nota,
+            a.comentario,
+            a.data_avaliacao,
+            c.nome AS cliente_nome
+
+        FROM avaliacao a
+
+        INNER JOIN cliente c
+            ON c.id_cliente = a.id_cliente
+
+        WHERE a.id_prestador = $1
+
+        ORDER BY a.data_avaliacao DESC
+        `,
+        [idPrestador]
+    );
+
+    return result.rows;
+}
+
+async function buscarPorAgendamento(idAgendamento) {
+
+    const result = await pool.query(
+        `
+        SELECT *
+        FROM avaliacao
+        WHERE id_agendamento = $1
+        `,
+        [idAgendamento]
+    );
+
+    return result.rows[0];
+}
+
 module.exports = {
     criarAvaliacao,
     calcularMediaPrestador,
-    atualizarMediaPrestador
+    atualizarMediaPrestador,
+    listarAvaliacoesPrestador,
+    buscarPorAgendamento,
 };

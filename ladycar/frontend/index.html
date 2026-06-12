@@ -76,6 +76,44 @@
     </div>
   </div>
 
+    <div id="prestadorAvaliacoesScreen" class="hidden app-screen">
+
+        <div class="header-internal">
+            <h2>MINHAS AVALIAÇÕES</h2>
+        </div>
+
+        <div class="service-details">
+
+            <div id="prestadorMediaContainer">
+                <h3>⭐ Média Geral</h3>
+
+                <p id="prestadorMediaTexto">
+                    0.0 / 5.0
+                </p>
+                <p id="prestadorTotalAvaliacoes">
+                    Total de avaliações: 0
+                </p>
+            </div>
+
+            <hr>
+
+            <div id="listaAvaliacoesPrestador">
+
+                <p>Carregando avaliações...</p>
+
+            </div>
+
+        </div>
+
+        <nav class="bottom-nav prestador-nav">
+            <a href="#" class="nav-item nav-prestador-solicitacoes">📋</a>
+            <a href="#" class="nav-item nav-prestador-avaliacoes active">⭐</a>
+            <a href="#" class="nav-item nav-prestador-chat">💬</a>
+            <a href="#" class="nav-item nav-prestador-profile">👤</a>
+        </nav>
+
+    </div>
+
   <div id="prestadorProfileScreen" class="hidden app-screen">
 
     <div class="header-internal">
@@ -160,14 +198,21 @@
         </button>
 
         <button
-            id="sairBtn"
-            class="btn-secondary full-width"
-            style="margin-top:10px;">
+    id="sairBtn"
+    class="btn-secondary full-width"
+    style="margin-top:10px;">
 
-            SAIR / LOGOUT
+    SAIR / LOGOUT
 
-        </button>
-    </div>
+    </button>
+
+    <nav class="bottom-nav prestador-nav">
+        <a href="#" class="nav-item nav-prestador-solicitacoes">📋</a>
+        <a href="#" class="nav-item nav-prestador-avaliacoes">⭐</a>
+        <a href="#" class="nav-item nav-prestador-chat">💬</a>
+        <a href="#" class="nav-item nav-prestador-profile active">👤</a>
+    </nav>
+
 </div>
 </div>
 

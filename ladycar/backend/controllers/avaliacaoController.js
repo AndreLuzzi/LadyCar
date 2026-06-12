@@ -11,6 +11,19 @@ async function criarAvaliacao(req, res) {
             comentario
         } = req.body;
 
+        const avaliacaoExistente = 
+            await avaliacaoModel.buscarPorAgendamento(
+                id_agendamento
+            );
+
+        if (avaliacaoExistente) {
+
+            return res.status(400).json({
+                error: 'Este serviço já foi avaliado.'
+        });
+
+    }
+
         if (!nota || nota < 1 || nota > 5) {
             return res.status(400).json({
                 error: 'A nota deve estar entre 1 e 5'
@@ -48,6 +61,28 @@ async function criarAvaliacao(req, res) {
     }
 }
 
+async function listarAvaliacoesPrestador(req, res) {
+    try {
+
+        const { id } = req.params;
+
+        const avaliacoes =
+            await avaliacaoModel.listarAvaliacoesPrestador(id);
+
+        res.json(avaliacoes);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            error: 'Erro ao buscar avaliações'
+        });
+
+    }
+}
+
 module.exports = {
-    criarAvaliacao
+    criarAvaliacao,
+    listarAvaliacoesPrestador
 };
